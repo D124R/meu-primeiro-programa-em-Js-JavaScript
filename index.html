@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contador de Calorias</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f6fb;
+      color: #222;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    h1 {
+      margin-top: 0;
+      color: #0b3d91;
+    }
+    label {
+      display: block;
+      margin-top: 16px;
+      font-weight: 600;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccd0db;
+      border-radius: 10px;
+      margin-top: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    button {
+      margin-top: 18px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      background: #0b3d91;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0a357d;
+    }
+    .card {
+      background: #f7f9ff;
+      border-radius: 14px;
+      padding: 18px;
+      margin-top: 24px;
+    }
+    .card strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+    .entry-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .entry-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border-bottom: 1px solid #e0e5ed;
+    }
+    .entry-item:last-child {
+      border-bottom: none;
+    }
+    .entry-item button {
+      background: #d32f2f;
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .entry-item button:hover {
+      background: #b62828;
+    }
+    .summary { margin-top: 16px; }
+    .summary div { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Contador de Calorias</h1>
+    <p>Registre o alimento consumido e veja o total diário imediatamente.</p>
+
+    <form id="food-form">
+      <label for="food-name">Alimento</label>
+      <input id="food-name" type="text" placeholder="Ex: Banana" required />
+
+      <label for="food-description">Descrição</label>
+      <input id="food-description" type="text" placeholder="Ex: frita, cozida, com azeite" />
+
+      <label for="food-calories">Calorias (se souber)</label>
+      <input id="food-calories" type="number" min="0" step="1" placeholder="Ex: 105" />
+      <p id="estimate-result" style="margin: 8px 0 0; color: #444;"></p>
+
+      <label for="food-date">Data</label>
+      <input id="food-date" type="date" required />
+
+      <button id="estimate-button" type="button">Estimar calorias</button>
+      <button type="submit">Adicionar entrada</button>
+    </form>
+
+    <div class="card">
+      <strong>Entradas</strong>
+      <ul id="entries" class="entry-list"></ul>
+      <p id="empty-message" style="margin: 0; color: #555;">Nenhuma entrada registrada ainda.</p>
+    </div>
+
+    <div class="card summary">
+      <strong>Resumo</strong>
+      <div>Total geral: <span id="total-calories">0</span> calorias</div>
+      <div>Total do dia: <span id="day-calories">0</span> calorias</div>
+      <div>Data selecionada: <span id="selected-date"></span></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
