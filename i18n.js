@@ -264,7 +264,7 @@ function updateTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(element => {
     const key = element.getAttribute('data-i18n');
     if (element.tagName === 'INPUT') {
-      if (element.getAttribute('type') === 'text' || element.getAttribute('type') === 'number') {
+      if (element.type === 'text' || element.type === 'number') {
         element.placeholder = t(key + '-placeholder') || element.placeholder;
       }
     } else if (element.tagName === 'OPTION') {
@@ -274,21 +274,40 @@ function updateTranslations() {
     }
   });
   
-  // Update button theme text
+  // Update button theme text based on current theme
   const themeBtn = document.getElementById('theme-toggle');
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  themeBtn.textContent = isDark ? t('light-mode') : t('dark-mode');
+  if (themeBtn) {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    themeBtn.textContent = isDark ? t('light-mode') : t('dark-mode');
+  }
 }
+
+// Initialize theme and language as soon as possible
+function initializeApp() {
+  // Set theme first
+  const savedTheme = localStorage.getItem('appTheme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  
+  // Set language
+  currentLanguage = localStorage.getItem('appLanguage') || 'pt';
+  
+  // Update translations
+  updateTranslations();
+}
+
+// Run initialization immediately when script loads
+initializeApp();
 
 document.addEventListener('DOMContentLoaded', () => {
   const languageSelect = document.getElementById('language-select');
   const themeToggle = document.getElementById('theme-toggle');
   
-  // Load saved theme
-  const savedTheme = localStorage.getItem('appTheme') || 'light';
-  document.documentElement.setAttribute('data-theme', savedTheme);
+  if (!languageSelect || !themeToggle) {
+    console.warn('Required elements not found');
+    return;
+  }
   
-  // Set language selector
+  // Set initial values
   languageSelect.value = currentLanguage;
   updateTranslations();
   
@@ -301,7 +320,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Theme toggle listener
   themeToggle.addEventListener('click', () => {
-    const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('appTheme', newTheme);
     updateTranslations();
