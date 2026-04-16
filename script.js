@@ -1,13 +1,3 @@
-const loginScreen = document.getElementById('login-screen');
-const appScreen = document.getElementById('app-screen');
-const loginForm = document.getElementById('login-form');
-const loginUsernameInput = document.getElementById('login-username');
-const loginPasswordInput = document.getElementById('login-password');
-const loginMessage = document.getElementById('login-message');
-const loginButton = document.getElementById('login-button');
-const registerButton = document.getElementById('register-button');
-const logoutButton = document.getElementById('logout-button');
-const userNameElement = document.getElementById('user-name');
 const form = document.getElementById('food-form');
 const foodNameInput = document.getElementById('food-name');
 const foodDescriptionInput = document.getElementById('food-description');
@@ -24,10 +14,8 @@ const selectedDateElement = document.getElementById('selected-date');
 const DB_NAME = 'CalorieDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'entries';
-const USER_STORE_NAME = 'users';
 let db = null;
 let entries = [];
-let currentUser = localStorage.getItem('calorieCounterCurrentUser') || null;
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -54,12 +42,6 @@ function openDatabase() {
           autoIncrement: true,
         });
         store.createIndex('date', 'date', { unique: false });
-        store.createIndex('user', 'user', { unique: false });
-      }
-      if (!dbInstance.objectStoreNames.contains(USER_STORE_NAME)) {
-        dbInstance.createObjectStore(USER_STORE_NAME, {
-          keyPath: 'username',
-        });
       }
     };
 
@@ -88,49 +70,6 @@ function getAllEntries() {
       reject(event.target.error);
     };
   });
-}
-
-function getEntriesForUser(username) {
-  return getAllEntries().then((all) => {
-    if (!username) {
-      return [];
-    }
-    return all.filter((entry) => entry.user === username);
-  });
-}
-
-function hashPassword(password) {
-  return btoa(password);
-}
-
-function getUser(username) {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(USER_STORE_NAME, 'readonly');
-    const store = transaction.objectStore(USER_STORE_NAME);
-    const request = store.get(username);
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = (event) => reject(event.target.error);
-  });
-}
-
-function createUser(username, password) {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(USER_STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(USER_STORE_NAME);
-    const request = store.add({ username, password: hashPassword(password) });
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = (event) => reject(event.target.error);
-  });
-}
-
-async function authenticateUser(username, password) {
-  const user = await getUser(username);
-  if (!user) {
-    return false;
-  }
-  return user.password === hashPassword(password);
 }
 
 function addEntryToDatabase(entry) {
@@ -166,7 +105,7 @@ function removeEntryFromDatabase(id) {
 }
 
 async function loadEntries() {
-  entries = await getEntriesForUser(currentUser);
+  entries = await getAllEntries();
   renderEntries();
 }
 
@@ -229,7 +168,7 @@ function estimateCalories(food, description) {
 
 async function addEntry(food, calories, date, description) {
   const normalizedDate = normalizeDate(date);
-  const entry = { food, calories, date: normalizedDate, description, user: currentUser };
+  const entry = { food, calories, date: normalizedDate, description };
   await addEntryToDatabase(entry);
   await loadEntries();
 }
@@ -275,38 +214,6 @@ function renderEntries() {
   selectedDateElement.textContent = formatDate(selectedDay);
 }
 
-function setLoginMessage(message, type = 'error') {
-  loginMessage.textContent = message;
-  loginMessage.className = `message ${type}`;
-}
-
-function showLoginScreen(message = '') {
-  loginScreen.classList.remove('hidden');
-  appScreen.classList.add('hidden');
-  setLoginMessage(message, message ? 'error' : '');
-}
-
-function showAppScreen() {
-  loginScreen.classList.add('hidden');
-  appScreen.classList.remove('hidden');
-  userNameElement.textContent = currentUser;
-}
-
-async function handleLogin(username) {
-  currentUser = username;
-  localStorage.setItem('calorieCounterCurrentUser', currentUser);
-  await loadEntries();
-  showAppScreen();
-}
-
-async function logout() {
-  currentUser = null;
-  localStorage.removeItem('calorieCounterCurrentUser');
-  entries = [];
-  renderEntries();
-  showLoginScreen();
-}
-
 estimateButton.addEventListener('click', () => {
   const food = foodNameInput.value.trim();
   const description = foodDescriptionInput.value.trim();
@@ -321,60 +228,8 @@ estimateButton.addEventListener('click', () => {
   estimateResult.textContent = `Estimativa: ${estimate} calorias`;
 });
 
-loginForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const username = loginUsernameInput.value.trim();
-  const password = loginPasswordInput.value.trim();
-
-  if (!username || !password) {
-    setLoginMessage('Preencha usuário e senha.', 'error');
-    return;
-  }
-
-  try {
-    const authenticated = await authenticateUser(username, password);
-    if (!authenticated) {
-      setLoginMessage('Usuário ou senha incorretos.', 'error');
-      return;
-    }
-    setLoginMessage('Login bem-sucedido!', 'success');
-    await handleLogin(username);
-  } catch (error) {
-    console.error(error);
-    setLoginMessage('Erro ao fazer login. Tente novamente.', 'error');
-  }
-});
-
-registerButton.addEventListener('click', async () => {
-  const username = loginUsernameInput.value.trim();
-  const password = loginPasswordInput.value.trim();
-
-  if (!username || !password) {
-    setLoginMessage('Preencha usuário e senha para registrar.', 'error');
-    return;
-  }
-
-  try {
-    const existing = await getUser(username);
-    if (existing) {
-      setLoginMessage('Esse usuário já existe. Use outro nome.', 'error');
-      return;
-    }
-    await createUser(username, password);
-    setLoginMessage('Usuário registrado com sucesso! Faça login agora.', 'success');
-  } catch (error) {
-    console.error(error);
-    setLoginMessage('Erro ao registrar. Tente novamente.', 'error');
-  }
-});
-
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
-
-  if (!currentUser) {
-    alert('Faça login antes de adicionar entradas.');
-    return;
-  }
 
   const food = foodNameInput.value.trim();
   const description = foodDescriptionInput.value.trim();
@@ -407,8 +262,6 @@ form.addEventListener('submit', async (event) => {
   }
 });
 
-logoutButton.addEventListener('click', () => logout());
-
 foodDateInput.addEventListener('change', () => renderEntries());
 
 (async function initialize() {
@@ -416,19 +269,10 @@ foodDateInput.addEventListener('change', () => renderEntries());
 
   try {
     await openDatabase();
-    if (currentUser) {
-      const user = await getUser(currentUser);
-      if (user) {
-        await handleLogin(currentUser);
-      } else {
-        currentUser = null;
-        showLoginScreen();
-      }
-    } else {
-      showLoginScreen();
-    }
+    await loadEntries();
   } catch (error) {
     console.error('Não foi possível abrir o banco de dados:', error);
     alert('Erro ao abrir o banco de dados do navegador.');
   }
 })();
+

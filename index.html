@@ -34,48 +34,6 @@
       box-shadow: 0 24px 60px rgba(15, 48, 103, 0.12);
       border: 1px solid rgba(255,255,255,0.6);
     }
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .user-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: #eef4ff;
-      color: #0f3d91;
-      font-weight: 700;
-      border: 1px solid rgba(15, 61, 145, 0.12);
-    }
-    .user-pill button {
-      background: #ff4f4f;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-    .user-pill button:hover {
-      background: #d43b3b;
-    }
-    .message {
-      margin: 8px 0 0;
-      font-size: 0.95rem;
-      min-height: 1.2rem;
-      color: #2d4b7b;
-    }
-    .message.error {
-      color: #b81a1a;
-    }
-    .message.success {
-      color: #1f7a2e;
-    }
     h1 {
       margin: 0;
       font-size: clamp(2rem, 2.5vw, 3rem);
@@ -224,79 +182,49 @@
 </head>
 <body>
   <div class="container">
-    <section id="login-screen">
-      <h1>Entrar no Contador</h1>
-      <p>Crie uma conta ou faça login para salvar suas refeições separadamente.</p>
-      <form id="login-form" class="form-grid">
-        <div>
-          <label for="login-username">Usuário</label>
-          <input id="login-username" type="text" placeholder="Ex: davit" required />
-        </div>
-        <div>
-          <label for="login-password">Senha</label>
-          <input id="login-password" type="password" placeholder="Sua senha" required />
-        </div>
-        <div class="action-buttons">
-          <button id="login-button" type="submit">Entrar</button>
-          <button id="register-button" type="button">Registrar</button>
-        </div>
-        <p id="login-message" class="message"></p>
-      </form>
-    </section>
+    <h1>Contador de Calorias</h1>
+    <p>Registre o alimento consumido e veja o total diário imediatamente.</p>
 
-    <section id="app-screen" class="hidden">
-      <div class="header-top">
-        <div>
-          <h1>Contador de Calorias</h1>
-          <p>Registre o alimento consumido e veja o total diário imediatamente.</p>
-        </div>
-        <div class="user-pill">
-          Olá, <span id="user-name"></span>
-          <button id="logout-button" type="button">Sair</button>
-        </div>
+    <form id="food-form" class="form-grid">
+      <div>
+        <label for="food-name">Alimento</label>
+        <input id="food-name" type="text" placeholder="Ex: Banana" required />
       </div>
 
-      <form id="food-form" class="form-grid">
-        <div>
-          <label for="food-name">Alimento</label>
-          <input id="food-name" type="text" placeholder="Ex: Banana" required />
-        </div>
-
-        <div>
-          <label for="food-description">Descrição</label>
-          <input id="food-description" type="text" placeholder="Ex: frita, cozida, com azeite" />
-        </div>
-
-        <div>
-          <label for="food-calories">Calorias (se souber)</label>
-          <input id="food-calories" type="number" min="0" step="1" placeholder="Ex: 105" />
-          <p id="estimate-result" class="message"></p>
-        </div>
-
-        <div>
-          <label for="food-date">Data</label>
-          <input id="food-date" type="date" required />
-        </div>
-
-        <div class="action-buttons">
-          <button id="estimate-button" type="button">Estimar calorias</button>
-          <button type="submit">Adicionar entrada</button>
-        </div>
-      </form>
-
-      <div class="card">
-        <strong>Entradas</strong>
-        <ul id="entries" class="entry-list"></ul>
-        <p id="empty-message" style="margin: 0; color: #555;">Nenhuma entrada registrada ainda.</p>
+      <div>
+        <label for="food-description">Descrição</label>
+        <input id="food-description" type="text" placeholder="Ex: frita, cozida, com azeite" />
       </div>
 
-      <div class="card summary">
-        <strong>Resumo</strong>
-        <div>Total geral: <span id="total-calories">0</span> calorias</div>
-        <div>Total do dia: <span id="day-calories">0</span> calorias</div>
-        <div>Data selecionada: <span id="selected-date"></span></div>
+      <div>
+        <label for="food-calories">Calorias (se souber)</label>
+        <input id="food-calories" type="number" min="0" step="1" placeholder="Ex: 105" />
+        <p id="estimate-result" class="message"></p>
       </div>
-    </section>
+
+      <div>
+        <label for="food-date">Data</label>
+        <input id="food-date" type="date" required />
+      </div>
+
+      <div class="action-buttons">
+        <button id="estimate-button" type="button">Estimar calorias</button>
+        <button type="submit">Adicionar entrada</button>
+      </div>
+    </form>
+
+    <div class="card">
+      <strong>Entradas</strong>
+      <ul id="entries" class="entry-list"></ul>
+      <p id="empty-message" style="margin: 0; color: #555;">Nenhuma entrada registrada ainda.</p>
+    </div>
+
+    <div class="card summary">
+      <strong>Resumo</strong>
+      <div>Total geral: <span id="total-calories">0</span> calorias</div>
+      <div>Total do dia: <span id="day-calories">0</span> calorias</div>
+      <div>Data selecionada: <span id="selected-date"></span></div>
+    </div>
   </div>
 
   <script src="script.js"></script>
