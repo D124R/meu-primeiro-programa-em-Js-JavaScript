@@ -182,51 +182,75 @@
 </head>
 <body>
   <div class="container">
-    <h1>Contador de Calorias</h1>
-    <p>Registre o alimento consumido e veja o total diário imediatamente.</p>
+    <div class="header">
+      <div>
+        <h1 data-i18n="title">Contador de Calorias</h1>
+        <p data-i18n="description">Registre o alimento consumido e veja o total diário imediatamente.</p>
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <label for="language-select" data-i18n="language">Idioma:</label>
+          <select id="language-select">
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="ja">日本語</option>
+            <option value="zh">中文</option>
+            <option value="ru">Русский</option>
+            <option value="ar">العربية</option>
+            <option value="ko">한국어</option>
+          </select>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" data-i18n="dark-mode">🌙 Escuro</button>
+      </div>
+    </div>
 
     <form id="food-form" class="form-grid">
       <div>
-        <label for="food-name">Alimento</label>
-        <input id="food-name" type="text" placeholder="Ex: Banana" required />
+        <label for="food-name" data-i18n="food-label">Alimento</label>
+        <input id="food-name" type="text" data-i18n="food-placeholder" placeholder="Ex: Banana" required />
       </div>
 
       <div>
-        <label for="food-description">Descrição</label>
-        <input id="food-description" type="text" placeholder="Ex: frita, cozida, com azeite" />
+        <label for="food-description" data-i18n="description-label">Descrição</label>
+        <input id="food-description" type="text" data-i18n="description-placeholder" placeholder="Ex: frita, cozida, com azeite" />
       </div>
 
       <div>
-        <label for="food-calories">Calorias (se souber)</label>
-        <input id="food-calories" type="number" min="0" step="1" placeholder="Ex: 105" />
+        <label for="food-calories" data-i18n="calories-label">Calorias (se souber)</label>
+        <input id="food-calories" type="number" min="0" step="1" data-i18n="calories-placeholder" placeholder="Ex: 105" />
         <p id="estimate-result" class="message"></p>
       </div>
 
       <div>
-        <label for="food-date">Data</label>
+        <label for="food-date" data-i18n="date-label">Data</label>
         <input id="food-date" type="date" required />
       </div>
 
       <div class="action-buttons">
-        <button id="estimate-button" type="button">Estimar calorias</button>
-        <button type="submit">Adicionar entrada</button>
+        <button id="estimate-button" type="button" data-i18n="estimate-btn">Estimar calorias</button>
+        <button type="submit" data-i18n="add-btn">Adicionar entrada</button>
       </div>
     </form>
 
     <div class="card">
-      <strong>Entradas</strong>
+      <strong data-i18n="entries-title">Entradas</strong>
       <ul id="entries" class="entry-list"></ul>
-      <p id="empty-message" style="margin: 0; color: #555;">Nenhuma entrada registrada ainda.</p>
+      <p id="empty-message" data-i18n="no-entries">Nenhuma entrada registrada ainda.</p>
     </div>
 
     <div class="card summary">
-      <strong>Resumo</strong>
-      <div>Total geral: <span id="total-calories">0</span> calorias</div>
-      <div>Total do dia: <span id="day-calories">0</span> calorias</div>
-      <div>Data selecionada: <span id="selected-date"></span></div>
+      <strong data-i18n="summary-title">Resumo</strong>
+      <div><span data-i18n="total-label">Total geral:</span> <span id="total-calories">0</span> calorias</div>
+      <div><span data-i18n="day-label">Total do dia:</span> <span id="day-calories">0</span> calorias</div>
+      <div><span data-i18n="date-selected">Data selecionada:</span> <span id="selected-date"></span></div>
     </div>
   </div>
 
   <script src="script.js"></script>
+  <script src="i18n.js"></script>
 </body>
 </html>
